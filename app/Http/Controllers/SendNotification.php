@@ -9,8 +9,13 @@ use Illuminate\Http\Request;
 class SendNotification extends Controller
 {
     public function sendNotification(Request $request){
-        $user = User::first();
+        $user = $this->getFirstUser();
         $user->notify(new InvoicePaid());
         return "Notifikasi berhasil terkirim";
+    }
+
+    private function getFirstUser(){
+        $user = User::first();
+        return $user ?? factory(User::class)->create();
     }
 }
