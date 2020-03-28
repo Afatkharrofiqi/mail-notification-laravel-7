@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramChannel;
+use NotificationChannels\Telegram\TelegramMessage;
 
 class InvoicePaid extends Notification
 {
@@ -29,7 +31,7 @@ class InvoicePaid extends Notification
      */
     public function via($notifiable)
     {
-        return explode(', ', $notifiable->notification_preference);
+        return ['mail','database',TelegramChannel::class];
     }
 
     /**
@@ -54,6 +56,19 @@ class InvoicePaid extends Notification
             'amount' => 10000,
             'invoice_action' => 'Pay now...'
         ];
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return TelegramMessage::create()
+            // Optional recipient user id.      // contoh disini adalah group "Notification Laravel"
+//            ->to('-372888180')                // bisa menggunakan integer chat id
+//            ->to($notifiable->telegram_id)    // bisa mengambil dari database telegram_id
+            ->to('@notificationlaravel')  // atau id group chat
+            // Markdown supported.
+            ->content("Hello there!")
+            // (Optional) Inline Buttons
+            ->button('View Google', 'www.google.com');
     }
 
     /**
