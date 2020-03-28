@@ -11,7 +11,7 @@ class SendNotification extends Controller
     public function sendNotification(Request $request){
         $user = $this->getFirstUser();
         $user->notify(new InvoicePaid());
-        return "Notifikasi berhasil terkirim";
+        return "Notifikasi berhasil terkirim via $user->notification_preference";
     }
 
     private function getFirstUser(){
